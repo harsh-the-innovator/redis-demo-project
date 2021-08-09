@@ -40,7 +40,7 @@ function cache(req, res, next) {
     if (err) throw err;
 
     if (data !== null) {
-      res.send(setResponse(username, repos));
+      res.send(setResponse(username, data));
     } else {
       next();
     }
