@@ -33,7 +33,21 @@ const getRepos = async (req, res) => {
   }
 };
 
-app.get("/repos/:username", getRepos);
+function cache(req, res, next) {
+  const { username } = req.params;
+
+  redisClient.get(username, (err, data) => {
+    if (err) throw err;
+
+    if (data !== null) {
+      res.send(setResponse(username, repos));
+    } else {
+      next();
+    }
+  });
+}
+
+app.get("/repos/:username", cache, getRepos);
 
 app.listen(PORT, () => {
   console.log(`App is listening on port ${PORT}`);
